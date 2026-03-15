@@ -2,9 +2,11 @@ import type { Pokemon } from "../Types/pokemon"
 
 interface PokemonCardProps {
   pokemon: Pokemon
+  isFavorite: boolean
+  onAddFavorite: (pokemon: Pokemon) => void
+  onRemoveFavorite: (id: number) => void
 }
 
-// Cores por tipo — um objeto como mapa de string para string
 const typeColors: Record<string, string> = {
   fire: 'bg-orange-400',
   water: 'bg-blue-400',
@@ -26,13 +28,12 @@ const typeColors: Record<string, string> = {
   steel: 'bg-slate-400',
 }
 
-function PokemonCard({ pokemon }: PokemonCardProps) {
+function PokemonCard({ pokemon, isFavorite, onAddFavorite, onRemoveFavorite }: PokemonCardProps) {
   const image = pokemon.sprites.other['official-artwork'].front_default
 
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6 max-w-sm mx-auto mt-8">
 
-      {/* ID e nome */}
       <p className="text-gray-400 text-sm font-mono">
         #{String(pokemon.id).padStart(3, '0')}
       </p>
@@ -40,14 +41,12 @@ function PokemonCard({ pokemon }: PokemonCardProps) {
         {pokemon.name}
       </h2>
 
-      {/* Imagem */}
       <img
         src={image}
         alt={pokemon.name}
         className="w-48 h-48 mx-auto"
       />
 
-      {/* Tipos */}
       <div className="flex gap-2 justify-center mt-4">
         {pokemon.types.map((t) => (
           <span
@@ -59,7 +58,6 @@ function PokemonCard({ pokemon }: PokemonCardProps) {
         ))}
       </div>
 
-      {/* Altura e peso */}
       <div className="flex justify-around mt-6 text-center">
         <div>
           <p className="text-gray-400 text-xs">Height</p>
@@ -71,7 +69,6 @@ function PokemonCard({ pokemon }: PokemonCardProps) {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="mt-6">
         {pokemon.stats.map((s) => (
           <div key={s.stat.name} className="mb-2">
@@ -88,6 +85,18 @@ function PokemonCard({ pokemon }: PokemonCardProps) {
           </div>
         ))}
       </div>
+
+      {/* Botão de favoritar */}
+      <button
+        onClick={() => isFavorite ? onRemoveFavorite(pokemon.id) : onAddFavorite(pokemon)}
+        className={`w-full mt-6 py-2 rounded-lg font-semibold transition-colors ${
+          isFavorite
+            ? 'bg-yellow-400 hover:bg-yellow-500 text-white'
+            : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+        }`}
+      >
+        {isFavorite ? '⭐ Favorited' : '☆ Add to Favorites'}
+      </button>
 
     </div>
   )
