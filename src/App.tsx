@@ -4,20 +4,18 @@ import SearchBar from "./components/SearchBar";
 import PokemonCard from './components/PokemonCard'
 import usePokemon from './hooks/usePokemon'
 import type { Pokemon } from "./Types/pokemon";
-import { useState } from "react";
 import FavoriteList from "./components/FavoriteList";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 function App() {
-const { pokemon, isLoading, error, searchPokemon } = usePokemon()
+  const { pokemon, isLoading, error, searchPokemon } = usePokemon()
 
-  // Lista de favoritos — array de Pokémons
-  const [favorites, setFavorites] = useState<Pokemon[]>([])
+  // Só trocamos useState por useLocalStorage — o resto é idêntico!
+  const [favorites, setFavorites] = useLocalStorage<Pokemon[]>('favorites', [])
 
-  // Verifica se o pokémon atual já está nos favoritos
   const isFavorite = favorites.some((f) => f.id === pokemon?.id)
 
   function handleAddFavorite(pokemon: Pokemon): void {
-    // Não adiciona duplicado
     if (favorites.some((f) => f.id === pokemon.id)) return
     setFavorites([...favorites, pokemon])
   }
@@ -53,7 +51,6 @@ const { pokemon, isLoading, error, searchPokemon } = usePokemon()
           />
         )}
 
-        {/* Só mostra a seção se tiver favoritos */}
         {favorites.length > 0 && (
           <FavoriteList
             favorites={favorites}
